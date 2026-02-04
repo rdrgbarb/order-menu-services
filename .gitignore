@@ -1,0 +1,63 @@
+# ===== Java / Maven =====
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+
+# ===== Gradle (if ever used) =====
+.gradle/
+build/
+
+# ===== IDEs =====
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# NetBeans
+nbproject/
+nbactions.xml
+
+# ===== OS / Misc =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+
+# ===== Env files / secrets =====
+.env
+.env.*
+!.env.example
+
+# ===== Docker =====
+# local volumes / overrides
+docker-compose.override.yml
+
+# ===== Coverage / Reports =====
+coverage/
+jacoco/
+*.exec
+*.ec
+
+# ===== Spring Boot =====
+# local config
+application-local.yml
+application-local.yaml
+
+# ===== Testcontainers =====
+.testcontainers.properties
+
+# ===== Temporary files =====
+*.tmp
+*.swp
+*~
