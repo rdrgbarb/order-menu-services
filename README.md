@@ -15,6 +15,33 @@ and **RabbitMQ** for status-change notifications.
 
 ---
 
+## Developer ergonomics (Makefile)
+
+Common commands:
+
+### Quality gate (format + tests)
+
+- `make verify` — runs the full quality gate (`./mvnw -q verify`, includes Spotless check + tests)
+
+### Tests
+
+- `make test` — run tests for the whole project
+- `make test.menu` — run tests for `services/menu`
+- `make test.order` — run tests for `services/order`
+
+### Formatting (Spotless)
+
+- `make spotless.check` — verify formatting (whole project)
+- `make spotless.apply` — auto-fix formatting (whole project)
+- `make spotless.check.menu` / `make spotless.apply.menu` — menu module only
+- `make spotless.check.order` / `make spotless.apply.order` — order module only
+
+### Docker (local stack)
+
+- `make up` — `docker compose up --build`
+- `make down` — `docker compose down -v`
+- `make logs` — `docker compose logs -f`
+
 ## Services & ports
 
 | Service | Module           | Port   |
@@ -161,7 +188,7 @@ Common types:
 
 Scopes used:
 
-* `init`, `menu`, `order`, `rabbit`, `docker`, `docs`, `ci`, `build`
+* `init`, `menu`, `order`, `rabbit`, `docker`, `docs`, `ci`, `build`, `dev`
 
 Examples:
 
