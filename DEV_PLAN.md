@@ -196,7 +196,6 @@ Target structure:
   * [ ] ✅ Test: returns 200 when exists, 404 when not
   * [ ] Implement
 * [ ] GET `/menu-items?limit=&offset=`
-  [instructions.md](../AI-help-and-instructions/allO-take-home-challenge/instructions.md)
   * [ ] ✅ Test: returns items + `totalRecords`
   * [ ] Implement (pagination)
 * [ ] PUT `/menu-items/{id}`
