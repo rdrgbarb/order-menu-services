@@ -64,22 +64,29 @@
             <googleJavaFormat>
               <version>${googleJavaFormat.version}</version>
             </googleJavaFormat>
-            <importOrder />
             <removeUnusedImports/>
           </java>
           <!-- Non-Java files: make these match .editorconfig defaults -->
           <formats>
             <format>
               <includes>
+                <include>**/pom.xml</include>
                 <include>**/*.md</include>
                 <include>**/*.yml</include>
                 <include>**/*.yaml</include>
                 <include>**/*.json</include>
-                <include>**/*.xml</include>
-                <include>**/pom.xml</include>
                 <include>.editorconfig</include>
                 <include>.gitignore</include>
               </includes>
+
+              <excludes>
+                <exclude>**/target/**</exclude>
+                <exclude>**/build/**</exclude>
+                <exclude>**/.idea/**</exclude>
+                <exclude>**/.mvn/**</exclude>
+                <exclude>**/node_modules/**</exclude>
+              </excludes>
+
               <trimTrailingWhitespace/>
               <endWithNewline/>
             </format>
