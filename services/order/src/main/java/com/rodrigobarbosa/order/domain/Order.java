@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Document(collation = "orders")
@@ -15,13 +15,13 @@ public class Order {
     private List<OrderItem> orderItems;
     private BigDecimal totalAmount;
     private OrderStatus orderStatus;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public Order() {
     }
 
-    public Order(String id, Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount, OrderStatus orderStatus, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    public Order(String id, Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount, OrderStatus orderStatus, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.customer = customer;
         this.orderItems = orderItems;
@@ -51,11 +51,11 @@ public class Order {
         return orderStatus;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
@@ -79,11 +79,11 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

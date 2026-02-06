@@ -123,11 +123,11 @@ Target structure:
 
 ### 1.2 Validation at the edge (Add when request DTOs are introduced)
 
-* [ ] Add Bean Validation annotations on request DTOs:
+* [x] Add Bean Validation annotations on request DTOs:
 
-  * [ ] required fields
-  * [ ] non-empty lists
-  * [ ] positive quantities/prices (where applicable)
+  * [x] required fields
+  * [x] non-empty lists
+  * [x] positive quantities/prices (where applicable)
 
 ### 1.3 Swagger / OpenAPI (simple and good)
 
@@ -136,7 +136,7 @@ Target structure:
 
   * [x] Swagger UI available
   * [x] OpenAPI JSON available
-* [ ] Add short descriptions to key endpoints + DTO fields (keep it minimal)
+* [x] Add short descriptions to key endpoints + DTO fields (keep it minimal)
 
 ✅ Deliverable: Swagger UI available for both services.
 
@@ -224,34 +224,34 @@ Target structure:
 
 ### 4.1 Domain & persistence
 
-* [ ] Define models:
+* [x] Define models:
 
-  * [ ] `Customer { id, name }`
-  * [ ] `OrderItem { productId, name, price, quantity }`  ← snapshot name/price
-  * [ ] `Order { id, customer, items, totalPrice, status, createdAt, updatedAt }`
-* [ ] Define `OrderStatus` enum (as per challenge)
-* [ ] Repository (Mongo)
+  * [x] `Customer { id, name }`
+  * [x] `OrderItem { productId, name, price, quantity }`  ← snapshot name/price
+  * [x] `Order { id, customer, items, totalPrice, status, createdAt, updatedAt }`
+* [x] Define `OrderStatus` enum (as per challenge)
+* [x] Repository (Mongo)
 
 ### 4.2 HTTP client to Menu Service (separation of concerns)
 
-* [ ] Create `MenuClient` interface
-* [ ] Implement with `WebClient` or `RestClient`
-* [ ] Add timeout configuration
-* [ ] Decide and document behavior:
+* [x] Create `MenuClient` interface
+* [x] Implement with `WebClient` or `RestClient`
+* [x] Add timeout configuration
+* [x] Decide and document behavior:
 
-  * [ ] product not found → return 400 or 404 (pick one and keep consistent)
-  * [ ] menu down → return 503 with clear message
+  * [x] product not found → return 400 or 404 (pick one and keep consistent)
+  * [x] menu down → return 503 with clear message
 
 ### 4.3 Endpoints (thin slices + tests)
 
-* [ ] POST `/orders`
+* [x] POST `/orders`
 
-  * [ ] ✅ Unit test: totalPrice calculation and item snapshot
-  * [ ] ✅ Slice test: validation errors (empty items, missing customer)
-  * [ ] Implement:
+  * [x] ✅ Unit test: totalPrice calculation and item snapshot
+  * [x] ✅ Slice test: validation errors (empty items, missing customer)
+  * [x] Implement:
 
-    * [ ] resolve products from `menu`
-    * [ ] compute totalPrice
+    * [x] resolve products from `menu`
+    * [x] compute totalPrice
 * [ ] GET `/orders/{id}`
 
   * [ ] ✅ Test: 200 when exists / 404 when not

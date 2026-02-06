@@ -1,7 +1,8 @@
 package com.rodrigobarbosa.order.service;
 
 import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
+import com.rodrigobarbosa.order.domain.Order;
 
 public interface OrderService {
-  Object create(CreateOrderRequest request);
+    Order create(CreateOrderRequest request);
 }
