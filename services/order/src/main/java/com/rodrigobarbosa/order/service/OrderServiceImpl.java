@@ -4,6 +4,7 @@ import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
 import com.rodrigobarbosa.order.api.dto.OrderHistoryResponse;
 import com.rodrigobarbosa.order.api.dto.OrderMapper;
 import com.rodrigobarbosa.order.api.dto.OrderResponse;
+import com.rodrigobarbosa.order.api.dto.UpdateOrderStatusRequest;
 import com.rodrigobarbosa.order.api.error.NotFoundException;
 import com.rodrigobarbosa.order.domain.Customer;
 import com.rodrigobarbosa.order.domain.Order;
@@ -85,14 +86,14 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public OrderResponse updateStatus(String orderId, OrderStatus newStatus) {
+  public OrderResponse updateStatus(String orderId, UpdateOrderStatusRequest request) {
     Order order =
         orderRepository.findById(orderId).orElseThrow(() -> NotFoundException.order(orderId));
     OrderStatus current = order.getOrderStatus();
-    if (!OrderStatusTransition.isAllowed(current, newStatus)) {
-      throw conflict("Invalid status transition from " + current + " to " + newStatus);
+    if (!OrderStatusTransition.isAllowed(current, request.status())) {
+      throw conflict("Invalid status transition from " + current + " to " + request.status());
     }
-    order.setOrderStatus(newStatus);
+    order.setOrderStatus(request.status());
     order.setUpdatedAt(Instant.now());
     return OrderMapper.toResponse(orderRepository.save(order));
   }

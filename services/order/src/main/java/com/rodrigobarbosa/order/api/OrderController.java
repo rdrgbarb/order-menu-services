@@ -3,11 +3,13 @@ package com.rodrigobarbosa.order.api;
 import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
 import com.rodrigobarbosa.order.api.dto.OrderHistoryResponse;
 import com.rodrigobarbosa.order.api.dto.OrderResponse;
+import com.rodrigobarbosa.order.api.dto.UpdateOrderStatusRequest;
 import com.rodrigobarbosa.order.service.OrderService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,5 +42,11 @@ public class OrderController {
       @RequestParam(defaultValue = "0") @Min(0) long offset,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit) {
     return this.service.list(offset, limit);
+  }
+
+  @PatchMapping("/{id}/status")
+  public OrderResponse updateStatus(
+      @PathVariable String id, @Valid @RequestBody UpdateOrderStatusRequest request) {
+    return this.service.updateStatus(id, request);
   }
 }

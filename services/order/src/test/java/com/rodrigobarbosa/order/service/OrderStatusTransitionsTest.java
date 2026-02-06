@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.rodrigobarbosa.order.api.dto.UpdateOrderStatusRequest;
 import com.rodrigobarbosa.order.domain.Customer;
 import com.rodrigobarbosa.order.domain.Order;
 import com.rodrigobarbosa.order.domain.OrderItem;
@@ -31,7 +32,7 @@ class OrderStatusTransitionsTest {
     when(repo.findById("o1")).thenReturn(Optional.of(order));
     when(repo.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
-    service.updateStatus("o1", OrderStatus.PREPARING);
+    service.updateStatus("o1", new UpdateOrderStatusRequest(OrderStatus.PREPARING));
 
     verify(repo).save(any(Order.class));
   }
@@ -44,7 +45,8 @@ class OrderStatusTransitionsTest {
     Order order = baseOrder(OrderStatus.DELIVERED);
     when(repo.findById("o1")).thenReturn(Optional.of(order));
 
-    assertThatThrownBy(() -> service.updateStatus("o1", OrderStatus.CANCELLED))
+    var request = new UpdateOrderStatusRequest(OrderStatus.CANCELLED);
+    assertThatThrownBy(() -> service.updateStatus("o1", request))
         .isInstanceOf(ErrorResponseException.class)
         .satisfies(
             ex -> {
