@@ -43,6 +43,8 @@ services:
       - "8082:8082"
     environment:
       SPRING_MONGODB_URI: mongodb://mongo:27017/order
+      MENU_BASE_URL: http://menu:8081
+      MENU_TIMEOUT_MS: "2000"
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,env,configprops,loggers
       MANAGEMENT_ENDPOINT_ENV_SHOW_VALUES: ALWAYS
       SPRING_RABBITMQ_HOST: rabbitmq
