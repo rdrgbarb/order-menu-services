@@ -9,6 +9,7 @@ import com.rodrigobarbosa.order.domain.Customer;
 import com.rodrigobarbosa.order.domain.Order;
 import com.rodrigobarbosa.order.domain.OrderItem;
 import com.rodrigobarbosa.order.domain.OrderStatus;
+import com.rodrigobarbosa.order.domain.OrderStatusTransition;
 import com.rodrigobarbosa.order.external.menu.MenuClient;
 import com.rodrigobarbosa.order.repo.OrderRepository;
 import java.math.BigDecimal;
@@ -83,6 +84,19 @@ public class OrderServiceImpl implements OrderService {
     return new OrderHistoryResponse<>(total, orders);
   }
 
+  @Override
+  public OrderResponse updateStatus(String orderId, OrderStatus newStatus) {
+    Order order =
+        orderRepository.findById(orderId).orElseThrow(() -> NotFoundException.order(orderId));
+    OrderStatus current = order.getOrderStatus();
+    if (!OrderStatusTransition.isAllowed(current, newStatus)) {
+      throw conflict("Invalid status transition from " + current + " to " + newStatus);
+    }
+    order.setOrderStatus(newStatus);
+    order.setUpdatedAt(Instant.now());
+    return OrderMapper.toResponse(orderRepository.save(order));
+  }
+
   private static ErrorResponseException badRequest(String message) {
     ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
     return new ErrorResponseException(HttpStatus.BAD_REQUEST, pd, null);
@@ -91,5 +105,10 @@ public class OrderServiceImpl implements OrderService {
   private static ErrorResponseException serviceUnavailable(String message) {
     ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, message);
     return new ErrorResponseException(HttpStatus.SERVICE_UNAVAILABLE, pd, null);
+  }
+
+  private static ErrorResponseException conflict(String message) {
+    ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, message);
+    return new ErrorResponseException(HttpStatus.CONFLICT, pd, null);
   }
 }
