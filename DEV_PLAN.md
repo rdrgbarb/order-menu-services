@@ -260,16 +260,16 @@ Target structure:
 
   * [x] ✅ Test: filter + pagination + `totalRecords`
   * [x] Implement
-* [ ] PATCH `/orders/{id}` (status update)
+* [x] PATCH `/orders/{id}` (status update)
 
-  * [ ] ✅ Unit test: valid/invalid transitions (if you enforce rules)
-  * [ ] ✅ Test: 404 if missing
-  * [ ] Implement
+  * [x] ✅ Unit test: valid/invalid transitions (if you enforce rules)
+  * [x] ✅ Test: 404 if missing
+  * [x] Implement
 
 ### 4.4 Swagger polish
 
-* [ ] Tag + describe endpoints
-* [ ] Ensure request/response examples look good
+* [x] Tag + describe endpoints
+* [x] Ensure request/response examples look good
 
 ✅ Deliverable: Order Service core complete and documented.
 
