@@ -9,4 +9,5 @@ import java.math.BigDecimal;
 public record MenuItemCreateRequest(
     @Schema(example = "Cheeseburger") @NotBlank String name,
     @Schema(example = "29.90") @NotNull @DecimalMin(value = "0.01") BigDecimal price,
-    @Schema(example = "true") @NotNull Boolean available) {}
+    @Schema(example = "true", nullable = true, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        Boolean available) {}

@@ -22,8 +22,7 @@ public class MenuItemServiceImpl implements MenuItemService {
 
   @Override
   public MenuItemResponse create(MenuItemCreateRequest request) {
-    MenuItem saved =
-        repo.save(new MenuItem(null, request.name(), request.price(), request.available()));
+    MenuItem saved = repo.save(toEntity(request));
     return toResponse(saved);
   }
 
@@ -61,5 +60,13 @@ public class MenuItemServiceImpl implements MenuItemService {
 
   private MenuItemResponse toResponse(MenuItem item) {
     return new MenuItemResponse(item.getId(), item.getName(), item.getPrice(), item.isAvailable());
+  }
+
+  private MenuItem toEntity(MenuItemCreateRequest request) {
+    return new MenuItem(
+        null,
+        request.name(),
+        request.price(),
+        request.available() != null ? request.available() : true);
   }
 }

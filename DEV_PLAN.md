@@ -174,43 +174,47 @@ Target structure:
 
 ### 3.1 Domain & persistence
 
-* [ ] Define `MenuItem` model:
+* [x] Define `MenuItem` model:
 
-  * [ ] `id`, `name`, `price`, `available`
-* [ ] Create repository (Spring Data Mongo)
-* [ ] Create DTOs:
+  * [x] `id`, `name`, `price`, `available`
+* [x] Create repository (Spring Data Mongo)
+* [x] Create DTOs:
 
-  * [ ] `MenuItemCreateRequest`, `MenuItemUpdateRequest`, `MenuItemResponse`
-  * [ ] `PaginatedResponse<T>` with `totalRecords`, `items[]`
+  * [x] `MenuItemCreateRequest`, `MenuItemUpdateRequest`, `MenuItemResponse`
+  * [x] `PaginatedResponse<T>` with `totalRecords`, `items[]`
 
 ### 3.2 Endpoints (thin slices + tests)
 
 > For each endpoint: write test → implement minimal → refactor.
 
-* [ ] POST `/menu-items`
+* [x] POST `/menu-items`
 
-  * [ ] ✅ Test: validation + created item returned
-  * [ ] Implement controller/service/repo flow
-* [ ] GET `/menu-items/{id}`
+  * [x] ✅ Test: validation + created item returned
+  * [x] Implement controller/service/repo flow
+* [x] GET `/menu-items/{id}`
 
-  * [ ] ✅ Test: returns 200 when exists, 404 when not
-  * [ ] Implement
-* [ ] GET `/menu-items?limit=&offset=`
-  * [ ] ✅ Test: returns items + `totalRecords`
-  * [ ] Implement (pagination)
-* [ ] PUT `/menu-items/{id}`
+  * [x] ✅ Test: returns 200 when exists, 404 when not
+  * [x] Implement
+* [x] GET `/menu-items?limit=&offset=`
+  * [x] ✅ Test: returns items + `totalRecords`
+  * [x] Implement (pagination)
+* [x] PUT `/menu-items/{id}`
 
-  * [ ] ✅ Test: updates fields, 404 when missing
-  * [ ] Implement
-* [ ] DELETE `/menu-items/{id}`
+  * [x] ✅ Test: updates fields, 404 when missing
+  * [x] Implement
+* [x] DELETE `/menu-items/{id}`
 
-  * [ ] ✅ Test: deletes, 404 when missing
-  * [ ] Implement
+  * [x] ✅ Test: deletes, 404 when missing
+  * [x] Implement
 
 ### 3.3 Swagger polish
 
-* [ ] Add concise tags/descriptions to Menu endpoints
-* [ ] Confirm DTO schemas look reasonable in Swagger
+* [x] Add concise tags/descriptions to Menu endpoints
+* [x] Confirm DTO schemas look reasonable in Swagger
+
+### 3.4 Manual Tests
+
+* [x] Manual testing against API `/menu-items` with Bruno or curl
 
 ✅ Deliverable: Menu Service complete and documented.
 
