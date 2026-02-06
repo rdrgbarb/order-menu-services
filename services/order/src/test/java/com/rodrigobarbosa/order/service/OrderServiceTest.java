@@ -13,6 +13,7 @@ import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
 import com.rodrigobarbosa.order.api.dto.OrderResponse;
 import com.rodrigobarbosa.order.domain.Order;
 import com.rodrigobarbosa.order.external.menu.MenuClient;
+import com.rodrigobarbosa.order.messaging.OrderEventPublisher;
 import com.rodrigobarbosa.order.repo.OrderRepository;
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +27,7 @@ class OrderServiceTest {
   void create_shouldSnapshotNamePrice_andComputeTotalAmount() {
     OrderRepository repo = mock(OrderRepository.class);
     MenuClient menuClient = mock(MenuClient.class);
+    OrderEventPublisher publisher = mock(OrderEventPublisher.class);
 
     when(menuClient.getMenuItem("abc123"))
         .thenReturn(
@@ -49,7 +51,7 @@ class OrderServiceTest {
                   orderMock.getUpdatedAt());
             });
 
-    OrderService orderService = new OrderServiceImpl(repo, menuClient);
+    OrderService orderService = new OrderServiceImpl(repo, menuClient, publisher);
 
     CreateOrderRequest request =
         new CreateOrderRequest(
@@ -74,10 +76,11 @@ class OrderServiceTest {
   void create_shouldThrow400_whenProductNotFoundInMenu() {
     OrderRepository repo = mock(OrderRepository.class);
     MenuClient menuClient = mock(MenuClient.class);
+    OrderEventPublisher publisher = mock(OrderEventPublisher.class);
 
     when(menuClient.getMenuItem("invalid-product")).thenReturn(Optional.empty());
 
-    OrderService orderService = new OrderServiceImpl(repo, menuClient);
+    OrderService orderService = new OrderServiceImpl(repo, menuClient, publisher);
 
     CreateOrderRequest request =
         new CreateOrderRequest(
@@ -99,11 +102,12 @@ class OrderServiceTest {
   void create_shouldThrow503_whenMenuUnavailable() {
     OrderRepository repo = mock(OrderRepository.class);
     MenuClient menuClient = mock(MenuClient.class);
+    OrderEventPublisher publisher = mock(OrderEventPublisher.class);
 
     when(menuClient.getMenuItem("any-product"))
         .thenThrow(new MenuClient.MenuUnavailableException("Menu service is down"));
 
-    OrderService orderService = new OrderServiceImpl(repo, menuClient);
+    OrderService orderService = new OrderServiceImpl(repo, menuClient, publisher);
 
     CreateOrderRequest request =
         new CreateOrderRequest(

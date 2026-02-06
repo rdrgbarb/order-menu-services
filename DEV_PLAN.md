@@ -279,23 +279,23 @@ Target structure:
 
 ### 5.1 Event contract
 
-* [ ] Define event payload DTO:
+* [x] Define event payload DTO:
 
-  * [ ] `eventType`, `orderId`, `customerId`, `customerName`, `status`, `occurredAt`
+  * [x] `eventType`, `orderId`, `customerId`, `customerName`, `status`, `occurredAt`
 
 ### 5.2 Publisher on status change
 
-* [ ] Publish event when PATCH updates status
-* [ ] ✅ Test (choose one):
+* [x] Publish event when PATCH updates status
+* [x] ✅ Test (choose one):
 
-  * [ ] Unit test verifying publisher called
-  * [ ] OR integration test with Rabbit container (if time)
+  * [x] Unit test verifying publisher called
+  * [x] OR integration test with Rabbit container (if time)
 
 ### 5.3 Consumer: “notification simulation”
 
-* [ ] Consumer listens to queue
-* [ ] Logs notification including customer + status
-* [ ] ✅ Test: consumer handles payload (unit test OK)
+* [x] Consumer listens to queue
+* [x] Logs notification including customer + status
+* [x] ✅ Test: consumer handles payload (unit test OK)
 
 ✅ Deliverable: status update triggers publish; consumer logs notification.
 
@@ -407,8 +407,8 @@ Target structure:
 
 # Daily Execution Checklist (quick wins)
 
-* [ ] Start with a small slice + a test
-* [ ] Keep endpoints runnable continuously
-* [ ] Commit early and often using Conventional Commits
-* [ ] Keep compose working; avoid large broken periods
-* [ ] After each milestone: run `./mvnw verify`
+* [x] Start with a small slice + a test
+* [x] Keep endpoints runnable continuously
+* [x] Commit early and often using Conventional Commits
+* [x] Keep compose working; avoid large broken periods
+* [x] After each milestone: run `./mvnw verify`

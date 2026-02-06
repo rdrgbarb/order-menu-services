@@ -13,6 +13,7 @@ import com.rodrigobarbosa.order.domain.Customer;
 import com.rodrigobarbosa.order.domain.Order;
 import com.rodrigobarbosa.order.domain.OrderItem;
 import com.rodrigobarbosa.order.domain.OrderStatus;
+import com.rodrigobarbosa.order.messaging.OrderEventPublisher;
 import com.rodrigobarbosa.order.repo.OrderRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -26,7 +27,8 @@ class OrderStatusTransitionsTest {
   @Test
   void updateStatus_created_to_preparing_ok() {
     OrderRepository repo = mock(OrderRepository.class);
-    OrderService service = new OrderServiceImpl(repo, null);
+    OrderEventPublisher publisher = mock(OrderEventPublisher.class);
+    OrderService service = new OrderServiceImpl(repo, null, publisher);
 
     Order order = baseOrder(OrderStatus.CREATED);
     when(repo.findById("o1")).thenReturn(Optional.of(order));
@@ -40,7 +42,8 @@ class OrderStatusTransitionsTest {
   @Test
   void updateStatus_delivered_to_cancelled_invalid_throwsConflict() {
     OrderRepository repo = mock(OrderRepository.class);
-    OrderService service = new OrderServiceImpl(repo, null);
+    OrderEventPublisher publisher = mock(OrderEventPublisher.class);
+    OrderService service = new OrderServiceImpl(repo, null, publisher);
 
     Order order = baseOrder(OrderStatus.DELIVERED);
     when(repo.findById("o1")).thenReturn(Optional.of(order));

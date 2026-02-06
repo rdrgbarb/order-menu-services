@@ -14,3 +14,9 @@ management:
     web:
       exposure:
         include: health,info
+
+app:
+  rabbit:
+    exchange: order.events
+    queue: order.notifications
+    routing-key: order.status.changed

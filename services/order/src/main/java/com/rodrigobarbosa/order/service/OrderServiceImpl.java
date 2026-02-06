@@ -12,6 +12,8 @@ import com.rodrigobarbosa.order.domain.OrderItem;
 import com.rodrigobarbosa.order.domain.OrderStatus;
 import com.rodrigobarbosa.order.domain.OrderStatusTransition;
 import com.rodrigobarbosa.order.external.menu.MenuClient;
+import com.rodrigobarbosa.order.messaging.OrderEventPublisher;
+import com.rodrigobarbosa.order.messaging.OrderStatusChangedEvent;
 import com.rodrigobarbosa.order.repo.OrderRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -26,10 +28,13 @@ public class OrderServiceImpl implements OrderService {
 
   private final OrderRepository orderRepository;
   private final MenuClient menuClient;
+  private final OrderEventPublisher eventPublisher;
 
-  public OrderServiceImpl(OrderRepository orderRepository, MenuClient menuClient) {
+  public OrderServiceImpl(
+      OrderRepository orderRepository, MenuClient menuClient, OrderEventPublisher eventPublisher) {
     this.orderRepository = orderRepository;
     this.menuClient = menuClient;
+    this.eventPublisher = eventPublisher;
   }
 
   @Override
@@ -95,6 +100,20 @@ public class OrderServiceImpl implements OrderService {
     }
     order.setOrderStatus(request.status());
     order.setUpdatedAt(Instant.now());
+
+    var event =
+        new OrderStatusChangedEvent(
+            OrderStatusChangedEvent.TYPE,
+            order.getId(),
+            order
+                .getCustomer()
+                .getEmail(), // using email as customer ID until we have a proper customer service
+            order.getCustomer().getFullName(),
+            order.getOrderStatus().name(),
+            Instant.now());
+
+    eventPublisher.publish(event);
+
     return OrderMapper.toResponse(orderRepository.save(order));
   }
 

@@ -1,5 +1,6 @@
 package com.rodrigobarbosa.order.api.error;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
@@ -7,6 +8,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,6 +59,18 @@ public class GlobalExceptionHandler {
     HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
     String msg = extractMessage(ex);
     return build(status, msg, request, null);
+  }
+
+  // 400 - malformed JSON / invalid enum values / type mismatches in JSON body
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ApiError> handleNotReadable(
+      HttpMessageNotReadableException ex, HttpServletRequest request) {
+    String msg = "Malformed request body";
+    Throwable cause = ex.getCause();
+    if (cause instanceof InvalidFormatException ife) {
+      msg = "Invalid value for field: " + ife.getPathReference();
+    }
+    return build(HttpStatus.BAD_REQUEST, msg, request, null);
   }
 
   // 500 - unexpected
