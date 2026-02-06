@@ -4,11 +4,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.rodrigobarbosa.order.api.dto.OrderResponse;
 import com.rodrigobarbosa.order.api.error.GlobalExceptionHandler;
 import com.rodrigobarbosa.order.api.error.NotFoundException;
-import com.rodrigobarbosa.order.domain.Customer;
-import com.rodrigobarbosa.order.domain.Order;
-import com.rodrigobarbosa.order.domain.OrderItem;
 import com.rodrigobarbosa.order.domain.OrderStatus;
 import com.rodrigobarbosa.order.service.OrderService;
 import java.math.BigDecimal;
@@ -33,17 +31,18 @@ class OrderControllerGetByIdTest {
     String id = "123";
     Instant now = Instant.parse("2026-02-06T00:00:00Z");
 
-    Order order =
-        new Order(
+    OrderResponse orderResponse =
+        new OrderResponse(
             id,
-            new Customer("John Doe", "123 Main St", "john@example.com"),
-            List.of(new OrderItem("abc123", "Pizza", new BigDecimal("10.00"), 2)),
+            new OrderResponse.CustomerResponse("John Doe", "123 Main St", "john@example.com"),
+            List.of(
+                new OrderResponse.OrderItemResponse("abc123", "Pizza", new BigDecimal("10.00"), 2)),
             new BigDecimal("20.00"),
-            OrderStatus.CREATED,
+            OrderStatus.CREATED.name(),
             now,
             now);
 
-    when(orderService.getById(id)).thenReturn(order);
+    when(orderService.getById(id)).thenReturn(orderResponse);
 
     mvc.perform(get("/orders/{id}", id))
         .andExpect(status().isOk())

@@ -8,7 +8,6 @@ import com.rodrigobarbosa.menu.api.error.NotFoundException;
 import com.rodrigobarbosa.menu.domain.MenuItem;
 import com.rodrigobarbosa.menu.repo.MenuItemRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,9 +35,7 @@ public class MenuItemServiceImpl implements MenuItemService {
   @Override
   public PaginatedResponse<MenuItemResponse> list(long offset, int limit) {
     List<MenuItemResponse> items =
-        repo.findWithOffsetLimit(offset, limit).stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
+        repo.findWithOffsetLimit(offset, limit).stream().map(this::toResponse).toList();
     long total = repo.totalRecords();
     return new PaginatedResponse<>(total, items);
   }

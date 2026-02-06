@@ -252,14 +252,14 @@ Target structure:
 
     * [x] resolve products from `menu`
     * [x] compute totalPrice
-* [ ] GET `/orders/{id}`
+* [x] GET `/orders/{id}`
 
-  * [ ] ✅ Test: 200 when exists / 404 when not
-  * [ ] Implement
-* [ ] GET `/orders?customerId=&limit=&offset=`
+  * [x] ✅ Test: 200 when exists / 404 when not
+  * [x] Implement
+* [x] GET `/orders?customerId=&limit=&offset=`
 
-  * [ ] ✅ Test: filter + pagination + `totalRecords`
-  * [ ] Implement
+  * [x] ✅ Test: filter + pagination + `totalRecords`
+  * [x] Implement
 * [ ] PATCH `/orders/{id}` (status update)
 
   * [ ] ✅ Unit test: valid/invalid transitions (if you enforce rules)

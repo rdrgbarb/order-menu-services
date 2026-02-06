@@ -1,6 +1,9 @@
 package com.rodrigobarbosa.order.service;
 
 import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
+import com.rodrigobarbosa.order.api.dto.OrderHistoryResponse;
+import com.rodrigobarbosa.order.api.dto.OrderMapper;
+import com.rodrigobarbosa.order.api.dto.OrderResponse;
 import com.rodrigobarbosa.order.api.error.NotFoundException;
 import com.rodrigobarbosa.order.domain.Customer;
 import com.rodrigobarbosa.order.domain.Order;
@@ -28,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Order create(CreateOrderRequest request) {
+  public OrderResponse create(CreateOrderRequest request) {
     Instant now = Instant.now();
 
     Customer customer =
@@ -60,15 +63,24 @@ public class OrderServiceImpl implements OrderService {
         items.stream()
             .map(it -> it.getPrice().multiply(BigDecimal.valueOf(it.getQuantity())))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
     Order order = new Order(null, customer, items, totalAmount, OrderStatus.CREATED, now, now);
-
-    return orderRepository.save(order);
+    return OrderMapper.toResponse(orderRepository.save(order));
   }
 
   @Override
-  public Order getById(String id) {
-    return orderRepository.findById(id).orElseThrow(() -> NotFoundException.order(id));
+  public OrderResponse getById(String id) {
+    Order found = orderRepository.findById(id).orElseThrow(() -> NotFoundException.order(id));
+    return OrderMapper.toResponse(found);
+  }
+
+  @Override
+  public OrderHistoryResponse<OrderResponse> list(long offset, int limit) {
+    List<OrderResponse> orders =
+        orderRepository.findWithOffsetLimit(offset, limit).stream()
+            .map(OrderMapper::toResponse)
+            .toList();
+    long total = orderRepository.totalRecords();
+    return new OrderHistoryResponse<>(total, orders);
   }
 
   private static ErrorResponseException badRequest(String message) {

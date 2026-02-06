@@ -1,10 +1,13 @@
 package com.rodrigobarbosa.order.service;
 
 import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
-import com.rodrigobarbosa.order.domain.Order;
+import com.rodrigobarbosa.order.api.dto.OrderHistoryResponse;
+import com.rodrigobarbosa.order.api.dto.OrderResponse;
 
 public interface OrderService {
-  Order create(CreateOrderRequest request);
+  OrderResponse create(CreateOrderRequest request);
 
-  Order getById(String id);
+  OrderResponse getById(String id);
+
+  OrderHistoryResponse<OrderResponse> list(long offset, int limit);
 }

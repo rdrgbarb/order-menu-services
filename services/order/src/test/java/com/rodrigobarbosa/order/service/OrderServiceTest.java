@@ -3,9 +3,14 @@ package com.rodrigobarbosa.order.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.rodrigobarbosa.order.api.dto.CreateOrderRequest;
+import com.rodrigobarbosa.order.api.dto.OrderResponse;
 import com.rodrigobarbosa.order.domain.Order;
 import com.rodrigobarbosa.order.external.menu.MenuClient;
 import com.rodrigobarbosa.order.repo.OrderRepository;
@@ -53,14 +58,14 @@ class OrderServiceTest {
                 new CreateOrderRequest.CreateOrderItemRequest("abc123", 2),
                 new CreateOrderRequest.CreateOrderItemRequest("def456", 3)));
 
-    Order saved = orderService.create(request);
+    OrderResponse response = orderService.create(request);
 
-    assertThat(saved.getId()).isEqualTo("order123");
-    assertThat(saved.getCustomer().getFullName()).isEqualTo("John Doe");
-    assertThat(saved.getOrderItems()).hasSize(2);
-    assertThat(saved.getOrderItems().getFirst().getPrice()).isEqualByComparingTo("12.50");
-    assertThat(saved.getOrderItems().getFirst().getName()).isEqualTo("Pizza Margherita");
-    assertThat(saved.getTotalAmount()).isEqualByComparingTo("34.00"); // 2 * 12.50 + 3 * 3.00
+    assertThat(response.id()).isEqualTo("order123");
+    assertThat(response.customer().fullName()).isEqualTo("John Doe");
+    assertThat(response.orderItems()).hasSize(2);
+    assertThat(response.orderItems().getFirst().price()).isEqualByComparingTo("12.50");
+    assertThat(response.orderItems().getFirst().name()).isEqualTo("Pizza Margherita");
+    assertThat(response.totalAmount()).isEqualByComparingTo("34.00"); // 2 * 12.50 + 3 * 3.00
 
     verify(repo, times(1)).save(any(Order.class));
   }
