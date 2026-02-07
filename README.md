@@ -74,7 +74,8 @@ ORDER_COUNT=10 ./curl-examples.sh
 ```
 
 #### Scripted demo notes
-`curl-examples.sh` is the end-to-end smoke test: it creates menu items, creates orders using returned `productId`s (Order → Menu dependency), patches status (publishes event), and the Order consumer logs a `NOTIFICATION`.
+`curl-examples.sh` is the end-to-end smoke test: it creates menu items, creates orders using returned `productId`s 
+(Order → Menu dependency), patches status (publishes event), and the Order consumer logs a `NOTIFICATION`.
 
 Knobs:
 - `MENU_COUNT`, `ORDER_COUNT`, `PATCH_STATUS`
