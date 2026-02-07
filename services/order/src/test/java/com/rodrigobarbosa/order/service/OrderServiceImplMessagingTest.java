@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceImplMessagingTest {
+class OrderServiceImplMessagingTest {
 
   @Mock OrderRepository repo;
   @Mock MenuClient menuClient;

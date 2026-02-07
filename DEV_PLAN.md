@@ -305,28 +305,28 @@ Target structure:
 
 ### 6.1 curl-examples.sh
 
-* [ ] Create root `curl-examples.sh`
-* [ ] Include:
+* [x] Create root `curl-examples.sh`
+* [x] Include:
 
-  * [ ] create menu items
-  * [ ] list menu items
-  * [ ] create order using menu productIds
-  * [ ] update order status
-  * [ ] get order by id
-  * [ ] get order history
-  * [ ] show how to see notification logs
+  * [x] create menu items
+  * [x] list menu items
+  * [x] create order using menu productIds
+  * [x] update order status
+  * [x] get order by id
+  * [x] get order history
+  * [x] show how to see notification logs
 
 ### 6.2 Smoke run from scratch
 
-* [ ] `docker compose down -v`
-* [ ] `docker compose up --build`
-* [ ] Run `./curl-examples.sh`
-* [ ] Confirm:
+* [x] `docker compose down -v`
+* [x] `docker compose up --build`
+* [x] Run `./curl-examples.sh`
+* [x] Confirm:
 
-  * [ ] Swagger UIs reachable
-  * [ ] Order creation works with menu dependency
-  * [ ] Status update publishes event
-  * [ ] Consumer logs notification
+  * [x] Swagger UIs reachable
+  * [x] Order creation works with menu dependency
+  * [x] Status update publishes event
+  * [x] Consumer logs notification
 
 ✅ Deliverable: One-command boot + scripted demo works.
 
@@ -336,27 +336,27 @@ Target structure:
 
 ### 7.1 README contents (simple and complete)
 
-* [ ] Overview
-* [ ] Tech stack
-* [ ] How to run (compose)
+* [x] Overview
+* [x] Tech stack
+* [x] How to run (compose)
 
-  * [ ] prerequisites
-  * [ ] ports list
-* [ ] Swagger links (both services)
-* [ ] Curl examples (how to run)
-* [ ] Architecture notes:
+  * [x] prerequisites
+  * [x] ports list
+* [x] Swagger links (both services)
+* [x] Curl examples (how to run)
+* [x] Architecture notes:
 
-  * [ ] separation of concerns (controllers/services/repositories/clients)
-  * [ ] order snapshots name/price
-  * [ ] error handling approach
-  * [ ] event contract and notification simulation
-* [ ] Testing:
+  * [x] separation of concerns (controllers/services/repositories/clients)
+  * [x] order snapshots name/price
+  * [x] error handling approach
+  * [x] event contract and notification simulation
+* [x] Testing:
 
-  * [ ] how to run tests (`./mvnw verify`)
-  * [ ] what is covered (unit/slice/integration)
-* [ ] Tradeoffs + next steps:
+  * [x] how to run tests (`./mvnw verify`)
+  * [x] what is covered (unit/slice/integration)
+* [x] Tradeoffs + next steps:
 
-  * [ ] retries/backoff, idempotency, outbox pattern, auth, observability
+  * [x] retries/backoff, idempotency, outbox pattern, auth, observability
 
 ✅ Deliverable: reviewer can run + test + understand decisions quickly.
 

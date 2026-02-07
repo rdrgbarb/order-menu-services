@@ -1,14 +1,13 @@
 # order-menu-services
 
 Two Spring Boot microservices (**menu** + **order**) for a simple ordering workflow, using **MongoDB** for persistence
-and **RabbitMQ** for status-change notifications.
+and **RabbitMQ** for status-change notifications (simulation via logs).
 
 ## Tech stack
 
-- Java 21
-- Spring Boot
+- Java 21 + Spring Boot 4
 - Maven (multi-module)
-- MongoDB
+- MongoDB 7
 - RabbitMQ (Spring AMQP)
 - OpenAPI / Swagger UI (springdoc)
 - Docker / docker compose
@@ -17,30 +16,33 @@ and **RabbitMQ** for status-change notifications.
 
 ## Developer ergonomics (Makefile)
 
-Common commands:
+Start here:
+- `make help` -- list available commands
 
-### Quality gate (format + tests)
-
-- `make verify` — runs the full quality gate (`./mvnw -q verify`, includes Spotless check + tests)
+### Quality gate
+- `make verify` -- formatting check + tests (`./mvnw verify`)
 
 ### Tests
-
-- `make test` — run tests for the whole project
-- `make test.menu` — run tests for `services/menu`
-- `make test.order` — run tests for `services/order`
+- `make test` -- all tests
+- `make test.menu` -- menu module tests
+- `make test.order` -- order module tests
 
 ### Formatting (Spotless)
-
-- `make spotless.check` — verify formatting (whole project)
-- `make spotless.apply` — auto-fix formatting (whole project)
-- `make spotless.check.menu` / `make spotless.apply.menu` — menu module only
-- `make spotless.check.order` / `make spotless.apply.order` — order module only
+- `make spotless.check` -- check formatting
+- `make spotless.apply` -- auto-fix formatting
 
 ### Docker (local stack)
+- `make up` -- `docker compose up --build`
+- `make down` -- `docker compose down -v`
+- `make ps` -- list containers
 
-- `make up` — `docker compose up --build`
-- `make down` — `docker compose down -v`
-- `make logs` — `docker compose logs -f`
+### Logs (powerful filters)
+- `make logs` -- follow logs (all)
+- `make logs.order` / `make logs.menu` -- follow one service
+- `make logs.order FILTER="NOTIFICATION|Published eventType"` -- grep logs live
+- `make logs.order.err` -- focused stacktrace filters
+
+---
 
 ## Services & ports
 
@@ -49,160 +51,142 @@ Common commands:
 | menu    | `services/menu`  | `8081` |
 | order   | `services/order` | `8082` |
 
+Infra:
+- MongoDB: `27017`
+- RabbitMQ: `5672`
+- RabbitMQ Management: `15672` (default user/pass: `guest` / `guest` -- local dev)
+
 ---
 
-## Quality gate (before committing)
+## How to run (Docker recommended)
 
-From the repository root, run the full quality gate:
+### 1) Boot everything
+```bash
+make up
+```
+Wait until both services are healthy (see logs if needed).
+
+### 2) Scripted demo (creates menu items + orders + patches status)
 
 ```bash
-# Runs: compile + tests + package for all modules
-# Also enforces formatting via Spotless (spotless:check bound to Maven 'verify')
-./mvnw clean verify
+chmod +x ./curl-examples.sh
+ORDER_COUNT=10 ./curl-examples.sh
 ```
 
-If it fails due to formatting, apply formatting and re-run the gate:
+#### Scripted demo notes
+`curl-examples.sh` is the end-to-end smoke test: it creates menu items, creates orders using returned `productId`s (Order → Menu dependency), patches status (publishes event), and the Order consumer logs a `NOTIFICATION`.
+
+Knobs:
+- `MENU_COUNT`, `ORDER_COUNT`, `PATCH_STATUS`
+- `OFFSET`, `LIMIT` (pagination for `GET /orders`)
 
 ```bash
-./mvnw spotless:apply
-./mvnw clean verify
-
+# Create 5 menu items, 50 orders, and patch status to PREPARING
+MENU_COUNT=5 ORDER_COUNT=50 PATCH_STATUS=PREPARING ./curl-examples.sh
 ```
 
-## How to run
+### 3) Confirm notifications (Rabbit consumer)
 
-### Option A) Run with Docker (recommended smoke test)
-
-Bring up Mongo + RabbitMQ + both services:
+Order service consumes the status-change event and logs a notification.
 
 ```bash
-docker compose up --build
-````
-
-After it’s up:
-
-* Menu Swagger UI: `http://localhost:8081/swagger-ui.html`
-* Order Swagger UI: `http://localhost:8082/swagger-ui.html`
-* RabbitMQ Management: `http://localhost:15672`
-
-  * default user/pass: `guest` / `guest`
-* MongoDB: `mongodb://localhost:27017`
-
-Stop everything:
-
-```bash
-docker compose down
+make logs.order FILTER="NOTIFICATION|Published eventType|order.status.changed"
 ```
 
-Reset volumes (drops Mongo data):
+### Stop (and reset volumes)
 
 ```bash
-docker compose down -v
+make down
 ```
 
-### Option B) Run locally (without Docker)
-
-You need MongoDB and RabbitMQ running somewhere (local or external), then:
+### One-command smoke
 
 ```bash
-./mvnw clean verify
-```
-
-Run each service in separate terminals:
-
-```bash
-./mvnw -pl services/menu spring-boot:run
-./mvnw -pl services/order spring-boot:run
+make down
+make up
+ORDER_COUNT=10 ./curl-examples.sh
+make logs.order FILTER="NOTIFICATION|Published eventType|order.status.changed"
 ```
 
 ---
 
-## Configuration notes
+## Swagger / OpenAPI
 
-Each service has its own `application.yaml`:
-
-* `services/menu/src/main/resources/application.yaml`
-* `services/order/src/main/resources/application.yaml`
-
-When running via Docker Compose, services receive connection settings through environment variables:
-
-* `SPRING_DATA_MONGODB_URI`
-* `SPRING_RABBITMQ_HOST`
-* `SPRING_RABBITMQ_PORT`
+* Menu Swagger UI: `http://localhost:8081/swagger-ui/index.html`
+* Order Swagger UI: `http://localhost:8082/swagger-ui/index.html`
+* Menu OpenAPI JSON: `http://localhost:8081/v3/api-docs`
+* Order OpenAPI JSON: `http://localhost:8082/v3/api-docs`
 
 ---
 
-## Repository layout
+## Architecture notes
 
-* `README.md` — Project overview and how to run/build/test.
-* `DEV_PLAN.md` — Development plan, milestones, checklist, TDD workflow, Conventional Commits guidance.
-* `docker-compose.yml` — Local stack (Mongo + RabbitMQ + both services).
-* `pom.xml` — Maven parent (multi-module).
-* `services/`
+* **Layering**: controllers (HTTP) → services (use-cases) → repositories (Mongo). Order service also has a **Menu client** boundary.
+* **Order item snapshot**: order stores `name/price` at creation time so historical orders remain stable even if menu changes.
+* **Errors**: consistent `ApiError` responses via `@ControllerAdvice` (400/404/409/500).
+* **Messaging**:
 
-  * `menu/` — Menu service (Spring Boot app + Dockerfile)
-  * `order/` — Order service (Spring Boot app + Dockerfile)
-* `.editorconfig` — Editor defaults.
-* `.gitignore` — Ignore rules (build outputs, IDE files, logs, local configs).
+  * On `PATCH /orders/{id}/status`, Order service publishes an event to RabbitMQ.
+  * Order service consumes the same event and logs a `NOTIFICATION` line (simulation).
+
+Event payload fields:
+
+* `eventType`, `orderId`, `customerId`, `customerName`, `status`, `occurredAt`
+
+## Behavior & edge cases (documented decisions)
+
+### Menu
+- **Create Menu Item**: `available` defaults to `true` (server-side default).
+- **Validation**: invalid request bodies return `400` with `ApiError` (including malformed JSON).
+
+### Order
+- **Menu dependency**: order creation calls Menu service to enrich items and snapshot `name/price`.
+  - If Menu is unavailable, Order returns `503` with a clear message.
+  - If a `productId` is invalid/not found, Order returns a client error (`400` or `404`, depending on implementation).
+- **Status update**: `PATCH /orders/{id}/status`
+  - invalid enum values (e.g., `"NOT_A_REAL_STATUS"`) return `400`
+  - invalid transitions return `409`
+  - unknown order id returns `404`
+
+### Messaging (RabbitMQ)
+- On status update, Order publishes a status-change event.
+- Order also consumes the event and logs a line containing `NOTIFICATION` (simulation).
+- This is a **demo flow** (not production-grade delivery guarantees; see Tradeoffs).
 
 ---
 
-## Build
+## Build / test
 
-Build everything from the repo root:
+From repo root:
 
 ```bash
-./mvnw clean package
+make verify
 ```
 
-Build a single module:
+---
 
+## Troubleshooting (fast)
+
+* **Script fails early**: ensure dependencies are installed:
+  - `curl`, `jq`
+* **See error stacktraces quickly**:
 ```bash
-./mvnw -pl services/menu clean package
-./mvnw -pl services/order clean package
+make logs.order.err
+make logs.menu.err
 ```
 
----
-
-## Test
-
-Run all tests:
-
+* **RabbitMQ UI**: `http://localhost:15672` (guest/guest)
+* **Reset everything (drops Mongo volume)**:
 ```bash
-./mvnw test
+make down
+make up
 ```
 
 ---
 
-## Conventional Commits
+## Tradeoffs / next steps
 
-This repo follows Conventional Commits.
-
-Format:
-
-* `<type>(scope): <subject>`
-
-Common types:
-
-* `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `ci`, `build`
-
-Scopes used:
-
-* `init`, `menu`, `order`, `rabbit`, `docker`, `docs`, `ci`, `build`, `dev`
-
-Examples:
-
-* `chore(init): bootstrap repository skeleton`
-* `feat(menu): implement create and get menu items`
-* `feat(order): create order with menu enrichment`
-* `feat(rabbit): publish and consume order status events`
-* `docs(readme): add runbook and swagger links`
-
----
-
-## Troubleshooting
-
-### Docker pulls timing out
-
-If `docker pull` fails but `curl` works, try pulling from alternative registries (this project already uses
-`public.ecr.aws` images in compose/Dockerfiles).
+* Messaging reliability: retries/backoff, DLQ, idempotency, consumer observability
+* Delivery guarantees: outbox pattern to avoid “DB committed but publish failed”
+* Security: authN/authZ + rate limits
+* Ops: tracing + structured logs + metrics
