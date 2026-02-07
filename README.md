@@ -187,7 +187,10 @@ make up
 
 ## Tradeoffs / next steps
 
-* Messaging reliability: retries/backoff, DLQ, idempotency, consumer observability
-* Delivery guarantees: outbox pattern to avoid “DB committed but publish failed”
-* Security: authN/authZ + rate limits
-* Ops: tracing + structured logs + metrics
+If this were going beyond a take-home:
+
+- **Keep the core cleaner**: controllers stay thin; business rules live in explicit use-cases/services; clearer transaction boundaries (and optional DTO↔domain mapping).
+- **Make messaging trustworthy**: outbox pattern + idempotency/dedup; retries/backoff + DLQ; resilience around publish/consume.
+- **Make it easier to operate**: correlation IDs across HTTP + messages, structured logs, tracing/metrics, readiness/liveness checks.
+- **Tighten the API contract**: consistent error format (Problem Details), stable status codes, versioning, and contract tests (including Order↔Menu).
+- **Harden security + delivery**: OAuth/JWT, service-to-service hardening, rate limits; Testcontainers + a few integration/e2e checks in CI; basic runbook/dashboards.
